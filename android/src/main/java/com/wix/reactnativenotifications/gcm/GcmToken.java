@@ -3,6 +3,8 @@ package com.wix.reactnativenotifications.gcm;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
@@ -121,12 +123,17 @@ public class GcmToken implements IGcmToken {
     }
 
     protected void sendTokenToJS() {
-        final ReactInstanceManager instanceManager = ((ReactApplication) mAppContext).getReactNativeHost().getReactInstanceManager();
-        final ReactContext reactContext = instanceManager.getCurrentReactContext();
+        new Handler(Looper.getMainLooper()).post(new Runnable() {
+            @Override
+            public void run() {
+                final ReactInstanceManager instanceManager = ((ReactApplication) mAppContext).getReactNativeHost().getReactInstanceManager();
+                final ReactContext reactContext = instanceManager.getCurrentReactContext();
 
-        // Note: Cannot assume react-context exists cause this is an async dispatched service.
-        if (reactContext != null && reactContext.hasActiveCatalystInstance()) {
-            reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit(TOKEN_RECEIVED_EVENT_NAME, sToken);
-        }
+                // Note: Cannot assume react-context exists cause this is an async dispatched service.
+                if (reactContext != null && reactContext.hasActiveCatalystInstance()) {
+                    reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit(TOKEN_RECEIVED_EVENT_NAME, sToken);
+                }
+            }
+        });
     }
 }
