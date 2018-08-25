@@ -1,5 +1,4 @@
-@import UIKit;
-
+#import <UIKit/UIKit.h>
 #import <React/RCTBridgeModule.h>
 #import <PushKit/PushKit.h>
 
