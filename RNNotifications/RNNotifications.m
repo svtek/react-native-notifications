@@ -649,12 +649,14 @@ RCT_EXPORT_METHOD(isRegisteredForRemoteNotifications:(RCTPromiseResolveBlock)res
 
 RCT_EXPORT_METHOD(checkPermissions:(RCTPromiseResolveBlock) resolve
                   reject:(RCTPromiseRejectBlock) reject) {
+  dispatch_async(dispatch_get_main_queue(), ^{
     UIUserNotificationSettings *currentSettings = [[UIApplication sharedApplication] currentUserNotificationSettings];
     resolve(@{
               @"badge": @((currentSettings.types & UIUserNotificationTypeBadge) > 0),
               @"sound": @((currentSettings.types & UIUserNotificationTypeSound) > 0),
               @"alert": @((currentSettings.types & UIUserNotificationTypeAlert) > 0),
               });
+  });
 }
 
 #if !TARGET_OS_TV
